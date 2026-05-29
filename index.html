@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <title>SpotNotes</title>
+    <meta charset="utf-8">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            color: #1DB954;
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: -1px;
+        }
+        .botoes-topo {
+            margin-bottom: 30px;
+        }
+        .btn-secundario {
+            background-color: transparent;
+            color: #FFFFFF;
+            border: 1px solid #727272;
+            padding: 8px 24px;
+            border-radius: 500px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0 10px;
+            font-size: 14px;
+        }
+        .btn-secundario:hover {
+            border-color: #FFFFFF;
+            transform: scale(1.05);
+        }
+        .container-principal {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        .caixa {
+            background-color: #181818;
+            padding: 30px;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 300px;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+        .caixa:hover {
+            background-color: #282828;
+        }
+        .caixa h3 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #B3B3B3;
+            margin-bottom: 8px;
+            display: block;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: none;
+            background-color: #2A2A2A;
+            color: #FFFFFF;
+            box-sizing: border-box;
+            font-size: 16px;
+            outline: none;
+            transition: box-shadow 0.2s;
+        }
+        input:focus {
+            box-shadow: 0 0 0 2px #FFFFFF;
+        }
+        .btn-principal {
+            width: 100%;
+            padding: 14px;
+            background-color: #1DB954;
+            color: #000000;
+            font-weight: bold;
+            border: none;
+            border-radius: 500px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .btn-principal:hover {
+            background-color: #1ED760;
+            transform: scale(1.04);
+        }
+        #caixa-lista {
+            margin-top: 10px;
+        }
+        .estilo-titulo {
+            color: #1DB954;
+            font-size: 18px;
+            border-bottom: 1px solid #2A2A2A;
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .artista-item {
+            color: #B3B3B3;
+            font-size: 16px;
+            margin: 8px 0;
+            padding-left: 10px;
+        }
+        .vazio {
+            color: #B3B3B3;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 30px;
+        }
+        footer p {
+            color: #B3B3B3;
+            font-size: 12px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>SpotNotes</h1>
+    
+    <div class="botoes-topo">
+        <button class="btn-secundario" onclick="sobreNos()">Criadores</button>
+        <button class="btn-secundario" onclick="limparTudo()">Zerar Lista</button>
+    </div>
+
+    <div class="container-principal">
+        
+        <div class="caixa">
+            <h3>Bora?</h3>
+            
+            <label>Nome da banda ou cantor</label>
+            <input type="text" id="artista" placeholder="Ex: Iron Maiden" autocomplete="off">
+
+            <label>Qual o estilo?</label>
+            <input type="text" id="estilo" placeholder="Ex: Heavy Metal" autocomplete="off">
+
+            <button class="btn-principal" onclick="salvarMusica()">Salvar na lista</button>
+        </div>
+
+        <div class="caixa">
+            <h3>Meus Salvos</h3>
+            <div id="caixa-lista">
+                <p class="vazio">Nenhum salvo ainda... manda bala!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Mini-projeto ADS</p>
+    </footer>
+
+    <script>
+        const estilosMapa = new Map();
+
+        function salvarMusica() {
+            let artistaTexto = document.getElementById("artista").value;
+            let estiloTexto = document.getElementById("estilo").value;
+
+            if (artistaTexto === "" || estiloTexto === "") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Preencha os dois campos antes de salvar!',
+                    background: '#282828',
+                    color: '#fff',
+                    confirmButtonColor: '#1DB954'
+                });
+                return;
+            }
+
+            if (estilosMapa.has(estiloTexto)) {
+                let artistasSalvos = estilosMapa.get(estiloTexto);
+                if (artistasSalvos.includes(artistaTexto)) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Atenção',
+                        text: 'Esse artista já tá salvo neste estilo!',
+                        background: '#282828',
+                        color: '#fff',
+                        confirmButtonColor: '#1DB954'
+                    });
+                    return;
+                } else {
+                    artistasSalvos.push(artistaTexto);
+                }
+            } else {
+                estilosMapa.set(estiloTexto, [artistaTexto]);
+            }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Boa!',
+                text: 'adicionado à sua lista.',
+                background: '#282828',
+                color: '#fff',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            document.getElementById("artista").value = "";
+            document.getElementById("estilo").value = "";
+            
+            atualizarTela();
+        }
+
+        function atualizarTela() {
+            let caixa = document.getElementById("caixa-lista");
+            caixa.innerHTML = "";
+
+            if (estilosMapa.size === 0) {
+                caixa.innerHTML = "<p class='vazio'>Nenhum salvo ainda... manda bala!</p>";
+                return;
+            }
+
+            for (let [estilo, artistas] of estilosMapa) {
+                let titulo = document.createElement("div");
+                titulo.className = "estilo-titulo";
+                titulo.innerText = estilo;
+                caixa.appendChild(titulo);
+
+                for (let artista of artistas) {
+                    let item = document.createElement("p");
+                    item.className = "artista-item";
+                    item.innerText = "• " + artista;
+                    caixa.appendChild(item);
+                }
+            }
+        }
+
+        function limparTudo() {
+            if (estilosMapa.size === 0) return;
+            
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Isso vai apagar a sua lista!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#1DB954',
+                cancelButtonColor: '#transparent',
+                confirmButtonText: 'Sim, apagar',
+                cancelButtonText: 'Cancelar',
+                background: '#282828',
+                color: '#fff',
+                customClass: {
+                    cancelButton: 'btn-secundario'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    estilosMapa.clear();
+                    atualizarTela();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Limpou!',
+                        text: 'Sua lista tá vazia.',
+                        background: '#282828',
+                        color: '#fff',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            });
+        }
+
+        function sobreNos() {
+            Swal.fire({
+                title: 'Criadores',
+                text: 'Bernardo, Carlos Eduardo, Felipe, Gabriel Gomes e Gabriel Lizeo.',
+                icon: 'info',
+                background: '#282828',
+                color: '#fff',
+                confirmButtonColor: '#1DB954'
+            });
+        }
+    </script>
+</body>
+</html>
